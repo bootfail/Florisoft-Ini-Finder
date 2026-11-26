@@ -348,11 +348,13 @@ if ($debT.Count -gt 0) {
     $t = $debT[0]
     $cols = Get-Columns $t
     $cols | ForEach-Object { [pscustomobject]@{ kolom = $_ } } | Export-Csv -LiteralPath (Join-Path $out 'debiteur_kolommen.csv') -NoTypeInformation -Encoding UTF8
-    $want = @('debnr', 'naam', 'podoosvul', 'pickkwdi', 'picklayout', 'picklay2', 'pickalways')
+    # vlbarc = ExternVoorloopKowadi: zonder deze voorloop maakt Florisoft geen KoWaDi-barcode (DoosVullenViaFactuur.GetKowadiBarcode)
+    $want = @('debnr', 'naam', 'podoosvul', 'pickkwdi', 'vlbarc', 'picklayout', 'picklay2', 'pickalways')
     $sel = New-Object 'System.Collections.Generic.List[string]'
     foreach ($w in $want) { $c = $cols | Where-Object { $_ -ieq $w } | Select-Object -First 1; if ($c) { $sel.Add($c) } }
+    if (-not ($sel | Where-Object { $_ -ieq 'naam' })) { $c = $cols | Where-Object { $_ -ieq 'debnaam' } | Select-Object -First 1; if ($c) { $sel.Insert([Math]::Min(1, $sel.Count), $c) } }
     foreach ($c in $cols) { if ($c -match '(?i)kowadi|kwdi|kwd' -and $c -notmatch '(?i)pass|pwd|wachtw' -and -not $sel.Contains($c)) { $sel.Add($c) } }
-    $missing = @($want | Where-Object { $w = $_; -not ($cols | Where-Object { $_ -ieq $w }) })
+    $missing = @($want | Where-Object { $w = $_; -not ($cols | Where-Object { $_ -ieq $w }) } | Where-Object { $_ -ne 'naam' -or -not ($cols -contains 'debnaam') })
     if ($missing.Count) { Say ("   kolommen niet gevonden in debiteur: {0}" -f ($missing -join ', ')) 'DarkYellow' }
     if ($sel.Count -gt 0) {
         $r = Invoke-Psql $Database ("\copy (select $((($sel | ForEach-Object { Q-Ident $_ }) -join ', ')) from $(Q-Ident $t.Schema).$(Q-Ident $t.Name)) to $(Q-Lit "$rawFwd/debiteur.csv") csv header")
@@ -395,8 +397,11 @@ if ($debRows.Count -gt 0) {
     $nPo = 0; $nKw = 0
     if ($hasPo) { $nPo = @($debRows | Where-Object { Test-True $_.podoosvul }).Count }
     if ($hasKw) { $nKw = @($debRows | Where-Object { Test-True $_.pickkwdi }).Count }
-    Say ("   Debiteuren: {0} met 'factuurregels inpakken' (PODOOSVUL), {1} met 'Kowadi versturen' (PICKKWDI), {2} met een afwijkende paklijstlayout of een van beide" -f $nPo, $nKw, $sel.Count)
-    $sel | Select-Object -First 40 | ForEach-Object { Say ("      {0,-10} {1,-30} doosvul={2} kwdi={3} layout={4} layout2={5}" -f "$($_.debnr)".Trim(), "$($_.naam)".Trim(), "$($_.podoosvul)", "$($_.pickkwdi)", "$($_.picklayout)".Trim(), "$($_.picklay2)".Trim()) }
-    if ($sel.Count -gt 40) { Say ("      ... en nog {0} (zie debiteur_kowadi.csv)" -f ($sel.Count - 40)) }
+    $nVl = @($debRows | Where-Object { "$($_.vlbarc)".Trim() }).Count
+    Say ("   Debiteuren: {0} met 'factuurregels inpakken' (PODOOSVUL), {1} met 'Kowadi versturen' (PICKKWDI), {2} met KoWaDi-voorloop (VLBARC), {3} met een afwijkende paklijstlayout of een van beide" -f $nPo, $nKw, $nVl, $sel.Count)
+    $debRows | Where-Object { "$($_.vlbarc)".Trim() } | Select-Object -First 40 | ForEach-Object { Say ("      VLBARC {0,-10} {1,-30} voorloop={2} doosvul={3} kwdi={4} layout={5}" -f "$($_.debnr)".Trim(), "$($_.naam)$($_.debnaam)".Trim(), "$($_.vlbarc)".Trim(), "$($_.podoosvul)", "$($_.pickkwdi)", "$($_.picklayout)".Trim()) }
+    $debRows | Group-Object { "$($_.picklayout)".Trim() } | Sort-Object Count -Descending | ForEach-Object { Say ("      afwijkende paklijstlayout {0,-14} bij {1} debiteuren" -f $(if ($_.Name) { $_.Name } else { '(geen)' }), $_.Count) }
+    $sel | Select-Object -First 15 | ForEach-Object { Say ("      {0,-10} {1,-30} doosvul={2} kwdi={3} layout={4} layout2={5}" -f "$($_.debnr)".Trim(), "$($_.naam)$($_.debnaam)".Trim(), "$($_.podoosvul)", "$($_.pickkwdi)", "$($_.picklayout)".Trim(), "$($_.picklay2)".Trim()) }
+    if ($sel.Count -gt 15) { Say ("      ... en nog {0} (zie debiteur_kowadi.csv)" -f ($sel.Count - 15)) }
 }
 Finish 'Klaar.'

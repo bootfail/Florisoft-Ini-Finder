@@ -126,7 +126,8 @@ if ($dd) {
         }
         # Zelfde afleiding als Florisoft (DatabaseConnectionInfo): \\SERVER[:poort]\share\...\DATABASE\map
         if ($dd.StartsWith('\\')) {
-            $parts = $dd.Split('\')
+            # Florisoft splitst het datapad met slash aan het eind: \\VSKO02\Florisoft\DataAdt\ -> DATAADT
+            $parts = ($dd.TrimEnd('\') + '\').Split('\')
             $sp = $parts[2].Split(':')
             if (-not $server) { $server = $sp[0] }
             if ($sp.Count -gt 1) { [void][int]::TryParse($sp[1], [ref]$port) }

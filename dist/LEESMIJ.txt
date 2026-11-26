@@ -1,9 +1,11 @@
-Florisoft KoWaDi-verzamelaar
+Florisoft KoWaDi-pakket
 
-1. Pak dit zip-bestand uit (of open het).
-2. Dubbelklik op KoWaDi-Verzamelen.cmd. Krijg je een blauwe Windows-waarschuwing: Meer informatie > Toch uitvoeren.
-3. Vraagt het script om een Postgres-gebruiker en wachtwoord en heb je die niet: typ skip.
-4. Aan het eind opent Verkenner met een zip op het bureaublad (Florisoft-KoWaDi-<pc>-<tijd>.zip).
-   Stuur die zip terug via WhatsApp.
+KoWaDi-Verzamelen.cmd  -> op een Florisoft-werkplek. Zoekt de installatie, layouts en instellingen.
+KoWaDi-Database.cmd    -> op de databaseserver (waar PostgreSQL draait). Exporteert de instellingen
+                          (ini.fsini) en de KoWaDi-velden van de debiteuren. Zoekt psql zelf op.
 
-Het script verandert niets in Florisoft of de database; het leest alleen. Wachtwoorden worden verborgen.
+Dubbelklik op het juiste bestand. Blauwe Windows-waarschuwing: Meer informatie > Toch uitvoeren.
+Vraagt het database-script om een gebruiker/wachtwoord: gebruik de postgres-beheerder.
+Aan het eind opent Verkenner met een zip op het bureaublad. Stuur die zip terug.
+
+De scripts lezen alleen; ze wijzigen niets in Florisoft of de database. Wachtwoorden worden verborgen.

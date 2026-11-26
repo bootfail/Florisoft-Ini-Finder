@@ -36,3 +36,21 @@ Het rapport komt in `Bureaublad\Florisoft-Ini-<PC>-<tijd>` (plus `.zip`): `rappo
 3. **Postgres-installaties** hebben geen `Ini`-map. Daar staat alles in de tabel `ini.fsini` (`INIID`, `USERID`, `SECTIE`, `ITEM`, `WAARDE`), en de systeeminstellingen in `FSSYSTEM`.
 
 Een "ini" is in Florisoft een DBF-tabel met de kolommen `SECTIE`, `ITEM` en `WAARDE`. De naam `FS-xxx.INI` verwijst naar het bestand `FS_xxx.DBF`. Het script leest die DBF's zelf uit, inclusief `.FPT`-memo's, en dat lukt ook als Florisoft ze open heeft.
+
+## KoWaDi-verzamelaar (`dist/Florisoft-KoWaDi-Verzamelaar.zip`)
+
+Dit pakket verzamelt op een klantmachine alles wat nodig is om de KoWaDi-barcode op de pickorder-paklijst uit te zoeken met de Florisoft-MCP en de config-assistent. Je kunt het per WhatsApp of mail sturen. In de zip zitten `KoWaDi-Verzamelen.cmd` (zelfstandig, dubbelklikken) en `LEESMIJ.txt`.
+
+Het pakket verzamelt:
+- FS_INTRO en het datapad
+- de Florisoft-versie
+- `postgres.txt` (wachtwoorden verborgen)
+- als `psql` aanwezig is: een export van `ini.fsini` (alle gebruikersinstellingen plus FSSYSTEM) en de KoWaDi-kolommen van `DEBITEUR`; anders `kowadi-export.sql` om op de databaseserver te draaien
+- de relevante regels uit de oude Ini-DBF's
+- de paklijstlayouts uit `<datapad>\Reports`, met een controle op `KowadiBarcode`
+
+Het resultaat is een zip op het bureaublad, die de klant terugstuurt.
+
+Bouwen: `powershell -File build.ps1`. Dat voegt de DBF-functies uit `Find-FlorisoftIni.ps1` in `src/KoWaDi-Verzamelen.ps1` in en schrijft `dist/`.
+
+Direct downloaden: https://github.com/bootfail/Florisoft-Ini-Finder/raw/main/dist/Florisoft-KoWaDi-Verzamelaar.zip

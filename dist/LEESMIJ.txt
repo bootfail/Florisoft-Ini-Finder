@@ -1,0 +1,9 @@
+Florisoft KoWaDi-verzamelaar
+
+1. Pak dit zip-bestand uit (of open het).
+2. Dubbelklik op KoWaDi-Verzamelen.cmd. Krijg je een blauwe Windows-waarschuwing: Meer informatie > Toch uitvoeren.
+3. Vraagt het script om een Postgres-gebruiker en wachtwoord en heb je die niet: typ skip.
+4. Aan het eind opent Verkenner met een zip op het bureaublad (Florisoft-KoWaDi-<pc>-<tijd>.zip).
+   Stuur die zip terug via WhatsApp.
+
+Het script verandert niets in Florisoft of de database; het leest alleen. Wachtwoorden worden verborgen.

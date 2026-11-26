@@ -8,10 +8,10 @@
   - Postgres-installaties: geen Ini-map; instellingen staan in tabel ini.fsini.
 
   Gebruik (PowerShell, geen admin nodig; admin ziet meer):
-    [Net.ServicePointManager]::SecurityProtocol='Tls12'; irm https://raw.githubusercontent.com/bootfail/Florisoft-Ini-Finder/main/Find-FlorisoftIni.ps1 | iex
+    [Net.ServicePointManager]::SecurityProtocol='Tls12'; irm https://is.gd/florisoftini | iex
 
   Met opties:
-    & ([scriptblock]::Create((irm https://raw.githubusercontent.com/bootfail/Florisoft-Ini-Finder/main/Find-FlorisoftIni.ps1))) -Export
+    & ([scriptblock]::Create((irm https://is.gd/florisoftini))) -Export
     -Path <map>     extra map om te doorzoeken (bijv. installatiemap of netwerkshare)
     -Deep           alle vaste schijven volledig doorzoeken naar fs_intro*.dbf
     -Export         alle gebruikers-ini's naar CSV + zip

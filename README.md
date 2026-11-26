@@ -7,13 +7,15 @@ Eén PowerShell-script dat op een Florisoft-machine uitzoekt waar de client-inst
 In PowerShell op de Florisoft-machine, liefst vanuit de Florisoft-installatiemap:
 
 ```powershell
-[Net.ServicePointManager]::SecurityProtocol='Tls12'; irm https://raw.githubusercontent.com/bootfail/Florisoft-Ini-Finder/main/Find-FlorisoftIni.ps1 | iex
+[Net.ServicePointManager]::SecurityProtocol='Tls12'; irm https://is.gd/florisoftini | iex
 ```
+
+Volledige link (als is.gd geblokkeerd is): `https://raw.githubusercontent.com/bootfail/Florisoft-Ini-Finder/main/Find-FlorisoftIni.ps1`
 
 Met opties:
 
 ```powershell
-[Net.ServicePointManager]::SecurityProtocol='Tls12'; & ([scriptblock]::Create((irm https://raw.githubusercontent.com/bootfail/Florisoft-Ini-Finder/main/Find-FlorisoftIni.ps1))) -Export
+[Net.ServicePointManager]::SecurityProtocol='Tls12'; & ([scriptblock]::Create((irm https://is.gd/florisoftini))) -Export
 ```
 
 | Optie | Wat het doet |
